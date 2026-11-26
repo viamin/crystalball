@@ -1,0 +1,22 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.4'
+          bundler-cache: true
+      - run: bundle exec rubocop
+      - run: bundle exec rspec spec features
+      - name: Build and install the gem in a clean gem home
+        run: |
+          gem build crystalball.gemspec
+          gem_home="$(mktemp -d)"
+          gem install --local --ignore-dependencies --no-document --install-dir "$gem_home" crystalball-*.gem

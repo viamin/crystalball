@@ -14,6 +14,21 @@ describe Crystalball::MapStorage::YAMLStorage do
   describe '.load' do
     subject(:map) { described_class.load(path) }
 
+    it 'safely loads a map written by YAMLStorage with modern Psych' do
+      Dir.mktmpdir do |directory|
+        generated_path = Pathname(directory).join('crystalball_data.yml')
+        storage = described_class.new(generated_path)
+
+        storage.dump(type: 'Crystalball::ExecutionMap', commit: '123')
+        storage.dump('UID1' => %w[1 2 3])
+
+        loaded_map = described_class.load(generated_path)
+        expect(loaded_map).to be_a(Crystalball::ExecutionMap)
+        expect(loaded_map.commit).to eq('123')
+        expect(loaded_map.example_groups).to eq('UID1' => %w[1 2 3])
+      end
+    end
+
     it 'loads yaml metadata and example_groups from file if it exists' do
       allow_path_exists true
       allow(path).to receive(:read).with(no_args).and_return({commit: '123', type: 'Crystalball::ExecutionMap'}.to_yaml + {'UID1' => %w[1 2 3]}.to_yaml + {'UID100' => %w[a b c]}.to_yaml)
@@ -59,7 +74,7 @@ describe Crystalball::MapStorage::YAMLStorage do
         end
 
         specify do
-          expect { subject }.to raise_error("Can't load execution maps with different metadata. Metadata: [{:commit=>\"123\", :type=>\"Crystalball::ExecutionMap\"}, {:commit=>\"456\", :type=>\"Crystalball::ExecutionMap\"}]")
+          expect { subject }.to raise_error("Can't load execution maps with different metadata. Metadata: [{commit: \"123\", type: \"Crystalball::ExecutionMap\"}, {commit: \"456\", type: \"Crystalball::ExecutionMap\"}]")
         end
       end
     end
