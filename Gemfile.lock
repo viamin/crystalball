@@ -4,6 +4,7 @@ PATH
     crystalball (0.7.0)
       git (>= 1.13, < 4.0)
       psych (>= 5.2, < 6.0)
+      rspec (>= 3.13, < 3.14)
 
 GEM
   remote: https://rubygems.org/
@@ -198,7 +199,6 @@ DEPENDENCIES
   parser (~> 3.3)
   pry (~> 0.15)
   rake (~> 13.2)
-  rspec (~> 3.13)
   rubocop (~> 1.72.0)
   rubocop-rspec (~> 3.5.0)
   simplecov (~> 0.22)

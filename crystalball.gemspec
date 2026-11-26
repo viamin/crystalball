@@ -32,6 +32,7 @@ Gem::Specification.new do |spec|
 
   spec.add_dependency 'git', '>= 1.13', '< 4.0'
   spec.add_dependency 'psych', '>= 5.2', '< 6.0'
+  spec.add_dependency 'rspec', '>= 3.13', '< 3.14'
 
   spec.required_ruby_version = '>= 3.4', '< 3.5'
 
@@ -42,7 +43,6 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'parser', '~> 3.3'
   spec.add_development_dependency 'pry', '~> 0.15'
   spec.add_development_dependency 'rake', '~> 13.2'
-  spec.add_development_dependency 'rspec', '~> 3.13'
   spec.add_development_dependency 'rubocop', '~> 1.72.0'
   spec.add_development_dependency 'rubocop-rspec', '~> 3.5.0'
   spec.add_development_dependency 'simplecov', '~> 0.22'

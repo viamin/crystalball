@@ -20,10 +20,9 @@ jobs:
         run: |
           gem build crystalball.gemspec
           gem_home="$(mktemp -d)"
-          gem install --local --ignore-dependencies --no-document --install-dir "$gem_home" crystalball-*.gem
+          GEM_HOME="$gem_home" GEM_PATH="$gem_home" gem install --no-document crystalball-*.gem
           gem_lib="$(printf '%s\n' "$gem_home"/gems/crystalball-*/lib)"
-          dependency_gem_path="$(bundle exec ruby -e 'puts Gem.path.join(":")')"
-          GEM_HOME="$gem_home" GEM_PATH="$gem_home:$dependency_gem_path" RUBYLIB="$gem_lib" ruby <<'RUBY'
+          GEM_HOME="$gem_home" GEM_PATH="$gem_home" RUBYLIB="$gem_lib" ruby <<'RUBY'
           require 'tmpdir'
           require 'pathname'
           require 'crystalball'

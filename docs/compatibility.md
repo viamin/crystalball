@@ -1,9 +1,9 @@
 # Ruby 3.4 compatibility verification
 
-Crystalball currently supports Ruby `>= 3.4, < 3.5`. Its supported runtime
-dependencies are `git >= 1.13, < 4.0` and `psych >= 5.2, < 6.0`.
-Development and CI use RSpec `~> 3.13`, SimpleCov `~> 0.22`, and TestProf
-`~> 1.4`; exact resolved versions are recorded in `Gemfile.lock`.
+Crystalball currently supports Ruby `>= 3.4, < 3.5`. Its runtime dependencies
+are `git >= 1.13, < 4.0`, `psych >= 5.2, < 6.0`, and RSpec `>= 3.13, < 3.14`.
+Development and CI use SimpleCov `~> 0.22` and TestProf `~> 1.4`; exact
+resolved versions are recorded in `Gemfile.lock`.
 
 ## Acceptance verification plan
 
@@ -22,7 +22,8 @@ bundle install
 bundle exec rubocop
 bundle exec rspec spec/integration/coverage_with_simplecov_spec.rb spec/map_storage/yaml_storage_spec.rb
 gem build crystalball.gemspec
-gem install --local --ignore-dependencies --no-document --install-dir "$(mktemp -d)" crystalball-*.gem
+gem_home="$(mktemp -d)"
+GEM_HOME="$gem_home" GEM_PATH="$gem_home" gem install --no-document crystalball-*.gem
 ```
 
 The change was developed against Ruby 3.4.13 and Psych 5.2.2. The focused
