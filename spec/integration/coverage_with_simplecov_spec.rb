@@ -30,19 +30,19 @@ describe 'coverage collection with SimpleCov' do
         example_map.define_singleton_method(:push) { |*files| collected_files.concat(files) }
 
         strategy = Crystalball::MapGenerator::CoverageStrategy.new
-      strategy.after_register
-      coverage_after_registration = Coverage.peek_result
-      counters_preserved = initial_coverage.all? do |file, initial_result|
-        registered_result = coverage_after_registration.fetch(file)
-        initial_result.fetch(:lines).zip(registered_result.fetch(:lines)).all? do |initial_count, registered_count|
-          initial_count.nil? || registered_count.to_i >= initial_count
+        strategy.after_register
+        coverage_after_registration = Coverage.peek_result
+        counters_preserved = initial_coverage.all? do |file, initial_result|
+          registered_result = coverage_after_registration.fetch(file)
+          initial_result.fetch(:lines).zip(registered_result.fetch(:lines)).all? do |initial_count, registered_count|
+            initial_count.nil? || registered_count.to_i >= initial_count
+          end
         end
-      end
         strategy.call(example_map, nil) { load probe_path }
 
         puts "CRYSTALBALL_RESULT=#{JSON.generate(
           running: Coverage.running?,
-        counters_preserved: counters_preserved,
+          counters_preserved: counters_preserved,
           collected: collected_files.include?(probe_path.delete_prefix("#{Dir.pwd}/"))
         )}"
       ensure
