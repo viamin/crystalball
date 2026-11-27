@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'set'
+
 module Crystalball
   class MapGenerator
     class AllocatedObjectsStrategy

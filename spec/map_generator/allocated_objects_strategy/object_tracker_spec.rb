@@ -1,9 +1,22 @@
 # frozen_string_literal: true
 
+require 'open3'
+require 'rbconfig'
+
 require 'spec_helper'
 
 describe Crystalball::MapGenerator::AllocatedObjectsStrategy::ObjectTracker do
   subject(:tracker) { described_class.new }
+
+  it 'loads Set when required in an isolated Ruby process' do
+    command = <<~RUBY
+      require 'crystalball/map_generator/allocated_objects_strategy/object_tracker'
+      Crystalball::MapGenerator::AllocatedObjectsStrategy::ObjectTracker.new
+    RUBY
+    output, status = Open3.capture2e(RbConfig.ruby, '-Ilib', '-e', command)
+
+    expect(status).to be_success, output
+  end
 
   before do
     stub_const('Dummy', Class.new)
