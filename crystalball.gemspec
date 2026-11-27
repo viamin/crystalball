@@ -34,7 +34,7 @@ Gem::Specification.new do |spec|
   spec.add_dependency 'psych', '>= 5.2', '< 6.0'
   spec.add_dependency 'rspec', '>= 3.13', '< 3.14'
 
-  spec.required_ruby_version = '>= 3.4', '< 3.5'
+  spec.required_ruby_version = '>= 2.7'
 
   spec.add_development_dependency 'actionview', '~> 7.2.0'
   spec.add_development_dependency 'activerecord', '~> 7.2.0'

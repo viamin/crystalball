@@ -1,6 +1,6 @@
 AllCops:
   DisplayCopNames: true
-  TargetRubyVersion: 3.4
+  TargetRubyVersion: 2.7
   NewCops: disable
 Style/StringLiterals:
   Enabled: false

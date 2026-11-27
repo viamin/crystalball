@@ -1,6 +1,7 @@
 # Ruby 3.4 compatibility verification
 
-Crystalball currently supports Ruby `>= 3.4, < 3.5`. Its runtime dependencies
+Crystalball supports Ruby `>= 2.7` without an upper version ceiling. Ruby 3.4 is
+explicitly verified by this change. Its runtime dependencies
 are `git >= 1.13, < 4.0`, `psych >= 5.2, < 6.0`, and RSpec `>= 3.13, < 3.14`.
 Development and CI use SimpleCov `~> 0.22` and TestProf `~> 1.4`; exact
 resolved versions are recorded in `Gemfile.lock`.
