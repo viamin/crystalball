@@ -6,6 +6,14 @@ require 'rbconfig'
 require 'spec_helper'
 
 RSpec.describe 'standard library dependencies' do
+  it 'declares runtime and development dependencies compatible with its support policy' do
+    specification = Gem::Specification.load('crystalball.gemspec')
+
+    expect(specification.required_ruby_version).to eq(Gem::Requirement.new('>= 3.1'))
+    expect(specification.runtime_dependencies.find { |dependency| dependency.name == 'git' }.requirement)
+      .to eq(Gem::Requirement.new('>= 1.13', '< 4.0'))
+  end
+
   it 'loads files using Forwardable in isolated Ruby processes' do
     forwardable_files.each do |path|
       output, status = Open3.capture2e(RbConfig.ruby, '--disable-gems', '-Ilib', '-e', "require '#{path}'")
