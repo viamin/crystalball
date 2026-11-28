@@ -27,17 +27,24 @@ module Crystalball
         private
 
         def read_files(path)
-          paths = path.directory? ? path.each_child.select(&:file?) : [path]
+          map_paths(path).map { |file| read_file(file) }
+        end
 
+        def map_paths(path)
+          paths = path.directory? ? path.each_child.select(&:file?) : [path]
           raise NoFilesFoundError, "No files or folder exists #{path}" unless paths.any?(&:exist?)
 
-          paths.map do |file|
-            metadata, *example_groups = file.read.split("---\n").reject(&:empty?).map do |yaml|
-              YAML.safe_load(yaml, [Symbol])
-            end
-            example_groups = example_groups.inject(&:merge!)
+          paths
+        end
 
-            [metadata, example_groups]
+        def read_file(file)
+          metadata, *example_groups = yaml_documents(file)
+          [metadata, example_groups.inject(&:merge!)]
+        end
+
+        def yaml_documents(file)
+          file.read.split("---\n").reject(&:empty?).map do |yaml|
+            YAML.safe_load(yaml, permitted_classes: [Symbol])
           end
         end
 

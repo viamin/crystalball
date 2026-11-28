@@ -30,22 +30,24 @@ Gem::Specification.new do |spec|
   spec.executables   = [File.basename('bin/crystalball')]
   spec.require_paths = ["lib"]
 
-  spec.add_dependency 'git'
+  spec.add_dependency 'git', '>= 1.13', '< 4.0'
+  spec.add_dependency 'ostruct'
+  spec.add_dependency 'psych', '>= 5.2', '< 6.0'
+  spec.add_dependency 'rspec', '>= 3.13', '< 3.14'
 
-  spec.required_ruby_version = '> 2.3.0'
+  spec.required_ruby_version = '>= 3.4'
 
-  spec.add_development_dependency 'actionview'
-  spec.add_development_dependency 'activerecord'
-  spec.add_development_dependency 'factory_bot'
-  spec.add_development_dependency 'i18n'
-  spec.add_development_dependency 'parser'
-  spec.add_development_dependency 'pry'
-  spec.add_development_dependency 'pry-byebug'
-  spec.add_development_dependency "rake", "~> 10.0"
-  spec.add_development_dependency "rspec", "~> 3.0"
-  spec.add_development_dependency 'rubocop', ">= 0.56"
-  spec.add_development_dependency 'rubocop-rspec'
-  spec.add_development_dependency 'simplecov'
-  spec.add_development_dependency 'sqlite3', "~> 1.3.13"
-  spec.add_development_dependency 'yard'
+  spec.add_development_dependency 'actionview', '~> 7.2.0'
+  spec.add_development_dependency 'activerecord', '~> 7.2.0'
+  spec.add_development_dependency 'factory_bot', '~> 6.5'
+  spec.add_development_dependency 'i18n', '~> 1.14'
+  spec.add_development_dependency 'parser', '~> 3.3'
+  spec.add_development_dependency 'pry', '~> 0.15'
+  spec.add_development_dependency 'rake', '~> 13.2'
+  spec.add_development_dependency 'rubocop', '~> 1.72.0'
+  spec.add_development_dependency 'rubocop-rspec', '~> 3.5.0'
+  spec.add_development_dependency 'simplecov', '~> 0.22'
+  spec.add_development_dependency 'sqlite3', '~> 2.6'
+  spec.add_development_dependency 'test-prof', '~> 1.4'
+  spec.add_development_dependency 'yard', '~> 0.9'
 end

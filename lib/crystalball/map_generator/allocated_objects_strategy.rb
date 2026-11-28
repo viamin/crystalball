@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require 'forwardable'
 require 'crystalball/map_generator/base_strategy'
 require 'crystalball/map_generator/object_sources_detector'
 require 'crystalball/map_generator/allocated_objects_strategy/object_tracker'

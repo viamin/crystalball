@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require 'forwardable'
 require 'crystalball/rails/tables_map'
 require 'crystalball/rails/tables_map_generator/configuration'
 
@@ -10,6 +11,7 @@ module Crystalball
       extend Forwardable
 
       attr_reader :configuration
+
       delegate %i[map_storage object_sources_detector] => :configuration
 
       class << self

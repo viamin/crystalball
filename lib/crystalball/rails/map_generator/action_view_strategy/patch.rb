@@ -13,6 +13,8 @@ module Crystalball
             # replaces it with custom one
             def apply!
               ::ActionView::Template.class_eval do
+                return if method_defined?(:cb_original_compile!) || private_method_defined?(:cb_original_compile!)
+
                 include Patch
 
                 alias_method :cb_original_compile!, :compile!
@@ -23,8 +25,10 @@ module Crystalball
             # Reverts original behavior of `ActionView::Template#compile!`
             def revert!
               ::ActionView::Template.class_eval do
-                alias_method :compile!, :cb_original_compile! # rubocop:disable Lint/DuplicateMethods
-                undef_method :cb_patched_compile!
+                return unless method_defined?(:cb_original_compile!) || private_method_defined?(:cb_original_compile!)
+
+                alias_method :compile!, :cb_original_compile!
+                remove_method :cb_original_compile!
               end
             end
           end
