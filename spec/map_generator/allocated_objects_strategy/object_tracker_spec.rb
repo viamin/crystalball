@@ -8,14 +8,16 @@ require 'spec_helper'
 describe Crystalball::MapGenerator::AllocatedObjectsStrategy::ObjectTracker do
   subject(:tracker) { described_class.new }
 
-  it 'loads Set when required in an isolated Ruby process' do
+  it 'explicitly requires set in an isolated Ruby process' do
     command = <<~RUBY
       require 'crystalball/map_generator/allocated_objects_strategy/object_tracker'
+      puts $LOADED_FEATURES.select { |path| path.end_with?('set.rb') }
       Crystalball::MapGenerator::AllocatedObjectsStrategy::ObjectTracker.new
     RUBY
-    output, status = Open3.capture2e(RbConfig.ruby, '-Ilib', '-e', command)
+    output, status = Open3.capture2e({'RUBYOPT' => nil}, RbConfig.ruby, '--disable-gems', '-Ilib', '-e', command)
 
     expect(status).to be_success, output
+    expect(output).to include('set.rb')
   end
 
   before do
