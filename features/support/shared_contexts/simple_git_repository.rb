@@ -30,6 +30,8 @@ shared_context 'simple git repository' do
     tmp_path.mkpath
     FileUtils.cp_r(simple_app_path, tmp_path)
 
+    git.config('user.name', 'Crystalball tests')
+    git.config('user.email', 'crystalball-tests@example.invalid')
     git.add(all: true)
     git.commit('First commit')
 
