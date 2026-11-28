@@ -6,6 +6,8 @@ describe Crystalball::MapGenerator::CoverageStrategy do
   subject { described_class.new(execution_detector) }
   let(:execution_detector) { instance_double('Crystalball::MapGenerator::CoverageStrategy::ExecutionDetector') }
 
+  before { allow(::RSpec.configuration.reporter).to receive(:register_listener) }
+
   include_examples 'base strategy'
 
   describe '#after_register' do
