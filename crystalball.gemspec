@@ -31,6 +31,7 @@ Gem::Specification.new do |spec|
   spec.require_paths = ["lib"]
 
   spec.add_dependency 'git', '>= 1.13', '< 4.0'
+  spec.add_dependency 'ostruct'
   spec.add_dependency 'psych', '>= 5.2', '< 6.0'
   spec.add_dependency 'rspec', '>= 3.13', '< 3.14'
 

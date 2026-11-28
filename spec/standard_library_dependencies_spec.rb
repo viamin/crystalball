@@ -12,6 +12,7 @@ RSpec.describe 'standard library dependencies' do
     expect(specification.required_ruby_version).to eq(Gem::Requirement.new('>= 3.4'))
     expect(specification.runtime_dependencies.find { |dependency| dependency.name == 'git' }.requirement)
       .to eq(Gem::Requirement.new('>= 1.13', '< 4.0'))
+    expect(specification.runtime_dependencies.map(&:name)).to include('ostruct')
   end
 
   it 'loads files using Forwardable in isolated Ruby processes' do
