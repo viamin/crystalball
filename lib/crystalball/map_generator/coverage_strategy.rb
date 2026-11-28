@@ -3,6 +3,7 @@
 require 'coverage'
 require 'crystalball/map_generator/base_strategy'
 require 'crystalball/map_generator/coverage_strategy/execution_detector'
+require 'crystalball/map_generator/coverage_strategy/shared_setup'
 
 module Crystalball
   class MapGenerator
@@ -14,10 +15,16 @@ module Crystalball
 
       def initialize(execution_detector = ExecutionDetector.new)
         @execution_detector = execution_detector
+        @shared_setup = SharedSetup.new(execution_detector)
       end
 
       def after_register
         Coverage.start unless Coverage.running?
+        ::RSpec.configuration.reporter.register_listener(@shared_setup, :start, :example_group_started, :example_group_finished)
+      end
+
+      def before_finalize
+        @shared_setup.close
       end
 
       # Adds to the example_map's used files the ones the ones in which
@@ -26,9 +33,11 @@ module Crystalball
       # @param [RSpec::Core::Example] example - a RSpec example
       def call(example_map, example)
         before = Coverage.peek_result
+        @shared_setup.capture(before)
         yield example_map, example
         after = Coverage.peek_result
         example_map.push(*execution_detector.detect(before, after))
+        example_map.push(*@shared_setup.files_for(example))
       end
     end
   end

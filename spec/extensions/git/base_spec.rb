@@ -11,5 +11,12 @@ describe Git::Base do
     let(:prehead) { repo.gcommit('HEAD^').sha }
 
     it { is_expected.to eq prehead }
+
+    it 'passes revisions as individual arguments to ruby-git' do
+      allow(repo.lib).to receive(:command).and_call_original
+
+      expect(subject).to eq prehead
+      expect(repo.lib).to have_received(:command).with('merge-base', 'HEAD^', 'HEAD')
+    end
   end
 end

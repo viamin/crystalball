@@ -1,0 +1,47 @@
+{
+  "environment": "isolated local container; Ruby 3.4.13; 2 CPU limit; SQLite in-memory; 9 examples; SimpleCov active in both modes",
+  "samples": [
+    {
+      "seed": 17,
+      "collect": false,
+      "total_elapsed_seconds": 1.2490758769999957,
+      "rspec_elapsed_seconds": 0.07762730900140014,
+      "map_bytes": 0
+    },
+    {
+      "seed": 17,
+      "collect": true,
+      "total_elapsed_seconds": 1.6651192639983492,
+      "rspec_elapsed_seconds": 0.2914780480059562,
+      "map_bytes": 6544
+    },
+    {
+      "seed": 493,
+      "collect": true,
+      "total_elapsed_seconds": 1.339381866986514,
+      "rspec_elapsed_seconds": 0.17737216500972863,
+      "map_bytes": 6544
+    },
+    {
+      "seed": 493,
+      "collect": false,
+      "total_elapsed_seconds": 1.1858981789991958,
+      "rspec_elapsed_seconds": 0.04877525298797991,
+      "map_bytes": 0
+    },
+    {
+      "seed": 809,
+      "collect": false,
+      "total_elapsed_seconds": 1.0592508660047315,
+      "rspec_elapsed_seconds": 0.05101543600903824,
+      "map_bytes": 0
+    },
+    {
+      "seed": 809,
+      "collect": true,
+      "total_elapsed_seconds": 1.3367985560034867,
+      "rspec_elapsed_seconds": 0.2439813879900612,
+      "map_bytes": 6417
+    }
+  ]
+}

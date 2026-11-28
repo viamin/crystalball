@@ -38,6 +38,25 @@ describe Crystalball::Rails::MapGenerator::I18nStrategy::SimplePatch do
 
     let!(:patched_class) { ::I18n::Backend::Simple }
 
+    it 'supports repeated collection sessions on the same backend' do
+      original = patched_class.instance_method(:lookup)
+      2.times do
+        described_class.apply!
+        expect { patched_class.new.lookup }.not_to raise_error
+        described_class.revert!
+        expect(patched_class.instance_method(:lookup)).to eq(original)
+      end
+    end
+
+    it 'does not wrap an already patched backend again' do
+      original = patched_class.instance_method(:lookup)
+      described_class.apply!
+      described_class.apply!
+      expect { patched_class.new.lookup }.not_to raise_error
+      described_class.revert!
+      expect(patched_class.instance_method(:lookup)).to eq(original)
+    end
+
     %i[load_file store_translations lookup].each do |method|
       it "changes and restores #{method} method" do
         original_method = patched_class.instance_method(method)
@@ -71,7 +90,7 @@ describe Crystalball::Rails::MapGenerator::I18nStrategy::SimplePatch do
     before { allow(Thread.current).to receive(:[]).with(:cb_locale_file_name) { filename } }
 
     it do
-      expect(instance).to receive(:cb_original_store_translations).with(locale, user: {name: {cb_filename: filename, cb_value: 'John'}})
+      expect(instance).to receive(:cb_original_store_translations).with(locale, {user: {name: {cb_filename: filename, cb_value: 'John'}}})
       subject
     end
 
@@ -81,6 +100,16 @@ describe Crystalball::Rails::MapGenerator::I18nStrategy::SimplePatch do
       it do
         expect(instance).to receive(:cb_original_store_translations).with(locale, data)
         subject
+      end
+    end
+
+    context 'when the backend loads frozen translation hashes' do
+      let(:data) { {user: {name: 'John'}.freeze}.freeze }
+
+      it 'tracks their source without modifying the loaded translations' do
+        expect(instance).to receive(:cb_original_store_translations).with(locale, {user: {name: {cb_filename: filename, cb_value: 'John'}}})
+        subject
+        expect(data).to eq(user: {name: 'John'})
       end
     end
   end

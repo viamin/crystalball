@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'open3'
+
 shared_context 'simple git repository' do
   let(:features_root) { Pathname(__dir__).join('..', '..', '..', 'features') }
   let(:fixtures_path) { features_root.join('fixtures') }
@@ -28,6 +30,8 @@ shared_context 'simple git repository' do
     tmp_path.mkpath
     FileUtils.cp_r(simple_app_path, tmp_path)
 
+    git.config('user.name', 'Crystalball tests')
+    git.config('user.email', 'crystalball-tests@example.invalid')
     git.add(all: true)
     git.commit('First commit')
 
@@ -40,7 +44,9 @@ shared_context 'simple git repository' do
 
   def generate_map
     replace_spec_helper_config
-    system("cd #{root} && rspec spec > /dev/null")
+    output, status = Open3.capture2e('rspec', 'spec', chdir: root.to_s)
+    warn output unless status.success?
+    status.success?
   end
 
   def change(file_path, content = '"changed"')
@@ -48,7 +54,7 @@ shared_context 'simple git repository' do
   end
 
   def delete(file_path)
-    git.lib.remove file_path
+    git.remove file_path.to_s
   end
 
   def move(file_path)

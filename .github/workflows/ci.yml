@@ -1,0 +1,52 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.4'
+          bundler-cache: true
+      - run: bundle exec rubocop
+      - name: Run full Ruby 3.4 spec and feature suite
+        run: bundle exec rspec spec features
+      - name: Build and install the gem in a clean gem home
+        run: |
+          gem build crystalball.gemspec
+          gem_home="$(mktemp -d)"
+          GEM_HOME="$gem_home" GEM_PATH="$gem_home" gem install --no-document crystalball-*.gem
+          gem_lib="$(printf '%s\n' "$gem_home"/gems/crystalball-*/lib)"
+          GEM_HOME="$gem_home" GEM_PATH="$gem_home" RUBYLIB="$gem_lib" ruby <<'RUBY'
+          require 'tmpdir'
+          require 'pathname'
+          require 'crystalball'
+
+          loaded_crystalball = $LOADED_FEATURES.find { |feature| feature.end_with?('/crystalball.rb') }
+          raise 'Crystalball was not loaded from the installed gem' unless loaded_crystalball.start_with?(ENV.fetch('GEM_HOME'))
+
+          Dir.mktmpdir('crystalball-smoke', Dir.pwd) do |directory|
+            path = Pathname(directory).join('map.yml')
+            storage = Crystalball::MapStorage::YAMLStorage.new(path)
+            storage.dump(type: 'Crystalball::ExecutionMap', commit: 'smoke')
+            storage.dump('example' => ['spec/smoke_spec.rb'])
+            raise 'map load failed' unless Crystalball::MapStorage::YAMLStorage.load(path).commit == 'smoke'
+
+            probe = File.join(directory, 'probe.rb')
+            File.write(probe, "SMOKE_PROBE = true\n")
+            collected_files = []
+            example_map = Object.new
+            example_map.define_singleton_method(:push) { |*files| collected_files.concat(files) }
+            strategy = Crystalball::MapGenerator::CoverageStrategy.new
+            strategy.after_register
+            strategy.call(example_map, nil) { load probe }
+            raise 'coverage collection failed' if collected_files.empty?
+          end
+          RUBY

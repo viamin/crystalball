@@ -1,9 +1,24 @@
 # frozen_string_literal: true
 
+require 'open3'
+require 'rbconfig'
+
 require 'spec_helper'
 
 describe Crystalball::MapGenerator::AllocatedObjectsStrategy::ObjectTracker do
   subject(:tracker) { described_class.new }
+
+  it 'explicitly requires set in an isolated Ruby process' do
+    command = <<~RUBY
+      require 'crystalball/map_generator/allocated_objects_strategy/object_tracker'
+      puts $LOADED_FEATURES.select { |path| path.end_with?('set.rb') }
+      Crystalball::MapGenerator::AllocatedObjectsStrategy::ObjectTracker.new
+    RUBY
+    output, status = Open3.capture2e({'RUBYOPT' => nil}, RbConfig.ruby, '--disable-gems', '-Ilib', '-e', command)
+
+    expect(status).to be_success, output
+    expect(output).to include('set.rb')
+  end
 
   before do
     stub_const('Dummy', Class.new)
