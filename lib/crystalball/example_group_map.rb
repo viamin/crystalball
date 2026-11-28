@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'forwardable'
+
 module Crystalball
   # Data object to store execution map for specific example
   class ExampleGroupMap

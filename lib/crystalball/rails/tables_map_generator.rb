@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require 'forwardable'
 require 'crystalball/rails/tables_map'
 require 'crystalball/rails/tables_map_generator/configuration'
 

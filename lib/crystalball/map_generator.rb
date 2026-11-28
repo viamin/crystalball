@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'forwardable'
+
 module Crystalball
   # Class to generate execution map during RSpec build execution
   class MapGenerator
