@@ -1,7 +1,7 @@
 # Ruby 3.4 compatibility verification
 
-Crystalball supports Ruby `>= 3.1` without an upper version ceiling. Ruby 3.4 is
-explicitly verified by this change. Its runtime dependencies
+This Paid fork supports Ruby `>= 3.4` without an upper version ceiling. Ruby 3.4
+is explicitly verified by this change. Its runtime dependencies
 are `git >= 1.13, < 4.0`, `psych >= 5.2, < 6.0`, and RSpec `>= 3.13, < 3.14`.
 Development and CI use SimpleCov `~> 0.22` and TestProf `~> 1.4`; exact
 resolved versions are recorded in `Gemfile.lock`.
@@ -12,7 +12,7 @@ resolved versions are recorded in `Gemfile.lock`.
 | --- | --- | --- |
 | Modern Psych map persistence | Permanent focused spec writes a map through `YAMLStorage`, then safely reloads it. | `spec/map_storage/yaml_storage_spec.rb` |
 | Existing SimpleCov session | Permanent integration spec starts SimpleCov in a fresh Ruby process before Crystalball, verifies pre-existing counters never decrease after registration, and executes a file that Crystalball collects. | `spec/integration/coverage_with_simplecov_spec.rb` |
-| Ruby 3.4 CI and package smoke test | GitHub Actions installs the locked dependencies on Ruby 3.4, verifies `git` 3 merge-base arguments are passed individually, runs the focused compatibility specs, then builds and locally installs the gem into a new gem home. The installed artifact writes and loads a map and collects coverage. | `.github/workflows/ci.yml`, `spec/extensions/git/base_spec.rb` |
+| Ruby 3.4 CI and package smoke test | GitHub Actions checks out two commits so the `HEAD^` merge-base regression has its parent, installs the locked dependencies on Ruby 3.4, verifies `git` 3 merge-base arguments are passed individually, runs the focused compatibility and cold-load specs, then builds and locally installs the gem into a new gem home. The installed artifact writes and loads a map and collects coverage. | `.github/workflows/ci.yml`, `spec/extensions/git/base_spec.rb`, `spec/map_generator/allocated_objects_strategy/object_tracker_spec.rb` |
 
 ## Commands and results
 
@@ -21,7 +21,7 @@ Run the same checks locally with:
 ```sh
 bundle install
 bundle exec rubocop
-bundle exec rspec spec/extensions/git/base_spec.rb spec/integration/coverage_with_simplecov_spec.rb spec/map_storage/yaml_storage_spec.rb
+bundle exec rspec spec/extensions/git/base_spec.rb spec/integration/coverage_with_simplecov_spec.rb spec/map_storage/yaml_storage_spec.rb spec/map_generator/allocated_objects_strategy/object_tracker_spec.rb spec/standard_library_dependencies_spec.rb
 gem build crystalball.gemspec
 gem_home="$(mktemp -d)"
 GEM_HOME="$gem_home" GEM_PATH="$gem_home" gem install --no-document crystalball-*.gem
@@ -30,7 +30,9 @@ GEM_HOME="$gem_home" GEM_PATH="$gem_home" gem install --no-document crystalball-
 The change was developed against Ruby 3.4.13 and Psych 5.2.2. The focused
 Psych regression initially failed with `ArgumentError: wrong number of
 arguments` from the old positional `YAML.safe_load` call. It passes with the
-keyword API while retaining `safe_load` and permitting only `Symbol`.
+keyword API while retaining `safe_load` and permitting only `Symbol`. The
+object tracker is also cold-loaded in a subprocess to verify its `Set`
+dependency does not rely on RSpec, Bundler, or another library loading it.
 
 The SimpleCov integration test is an isolated compatibility check, not a
 claim of full Paid integration compatibility. Paid's application-level

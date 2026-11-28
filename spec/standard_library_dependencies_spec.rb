@@ -9,7 +9,7 @@ RSpec.describe 'standard library dependencies' do
   it 'declares runtime and development dependencies compatible with its support policy' do
     specification = Gem::Specification.load('crystalball.gemspec')
 
-    expect(specification.required_ruby_version).to eq(Gem::Requirement.new('>= 3.1'))
+    expect(specification.required_ruby_version).to eq(Gem::Requirement.new('>= 3.4'))
     expect(specification.runtime_dependencies.find { |dependency| dependency.name == 'git' }.requirement)
       .to eq(Gem::Requirement.new('>= 1.13', '< 4.0'))
   end
