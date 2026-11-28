@@ -22,5 +22,5 @@ ActiveRecord::Schema.define(version: 20_180_321_094_057) do
     t.integer "model2_id"
   end
 
-  add_foreign_key "model1s", "model2s", column: "model2_id"
+  add_foreign_key "model1s_model2s", "model2s", column: "model2_id"
 end

@@ -16,8 +16,8 @@ jobs:
           ruby-version: '3.4'
           bundler-cache: true
       - run: bundle exec rubocop
-      - name: Run Ruby 3.4 compatibility specs
-        run: bundle exec rspec spec/extensions/git/base_spec.rb spec/integration/coverage_with_simplecov_spec.rb spec/map_storage/yaml_storage_spec.rb spec/map_generator/allocated_objects_strategy/object_tracker_spec.rb spec/standard_library_dependencies_spec.rb
+      - name: Run full Ruby 3.4 spec and feature suite
+        run: bundle exec rspec spec features
       - name: Build and install the gem in a clean gem home
         run: |
           gem build crystalball.gemspec
